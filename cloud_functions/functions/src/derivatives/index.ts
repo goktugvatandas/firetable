@@ -15,7 +15,7 @@ const shouldEvaluateReducer = (listeners, before, after) =>
   }, false);
 
 export const derivativeOnChange = async (
-  ref,
+  ref: FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData>,
   beforeData: FirebaseFirestore.DocumentData,
   afterData: FirebaseFirestore.DocumentData
 ) => {
@@ -27,7 +27,10 @@ export const derivativeOnChange = async (
         afterData
       );
       if (shouldEval) {
-        const newValue = await currDerivative.eval(db)(afterData);
+        const newValue = await currDerivative.eval(db)({
+          row: afterData,
+          ref: { path: ref.path, id: ref.id },
+        });
         if (newValue !== undefined) {
           return {
             ...(await accUpdates),
@@ -64,7 +67,10 @@ export const derivativeOnUpdate = async (
 };
 
 export const FT_derivatives = {
-  [collectionPath.replace("-", "_")]: {
+  [collectionPath
+    .replace("-", "_")
+    .replace(/\//g, "_")
+    .replace(/_{.*?}_/g, "_")]: {
     onUpdate: functions.firestore
       .document(`${collectionPath}/{docId}`)
       .onUpdate(derivativeOnUpdate),

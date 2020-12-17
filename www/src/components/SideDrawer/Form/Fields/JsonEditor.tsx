@@ -73,8 +73,7 @@ export default function JsonEditor({ control, name }: IFieldProps) {
               }}
               iconStyle="triangle"
               style={{
-                fontFamily:
-                  "SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace",
+                fontFamily: theme.typography.fontFamilyMono,
                 backgroundColor: "transparent",
               }}
             />
